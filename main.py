@@ -95,6 +95,8 @@ def latex_trees_sr(transitions, width, height, precision=2):
     xleft += xincrement
     xright += xincrement
 
+    reduce_lst = []
+
     for i, t in enumerate(transitions):
         start, end = None, None
         if t == SHIFT:
@@ -102,25 +104,52 @@ def latex_trees_sr(transitions, width, height, precision=2):
         if t == REDUCE:
             stack.pop()
 
-            if len(stack) == 1 or i == N_transitions - 1:  # LEFT
+            if i == N_transitions - 1:
+                continue
+
+            if len(stack) == 1:  # LEFT
+                while len(reduce_lst) > 0:
+                    line = reduce_lst.pop()
+                    lines.append(line)
+
                 start = (xleft, yleft - yincrement)
                 end   = (xoffset, height)
+
+                xoffset += 2*xincrement
+                yleft -= yincrement
+                yright += yincrement
+
+                xleft += xincrement
+                xright += xincrement
+
+                start = tuple(map(lambda x: round(x, precision), start))
+                end   = tuple(map(lambda x: round(x, precision), end))
+
+                line = (start, end)
+                lines.append(line)
             else:  # RIGHT
                 start = (xright, yright + yincrement)
                 end   = (xoffset, height)
 
-            xoffset += 2*xincrement
-            yleft -= yincrement
-            yright += yincrement
+                xoffset += 2*xincrement
+                yleft -= yincrement
+                yright += yincrement
 
-            xleft += xincrement
-            xright += xincrement
+                xleft += xincrement
+                xright += xincrement
 
-            start = tuple(map(lambda x: round(x, precision), start))
-            end   = tuple(map(lambda x: round(x, precision), end))
+                start = tuple(map(lambda x: round(x, precision), start))
+                end   = tuple(map(lambda x: round(x, precision), end))
 
-            line = (start, end)
-            lines.append(line)
+                line = (start, end)
+                reduce_lst.append(line)
+
+    while len(reduce_lst) > 0:
+        line = reduce_lst.pop()
+        lines.append(line)
+
+    line = ((0,0), (width/2,yoffset))
+    lines.append(line)
 
     return lines
 
@@ -136,10 +165,11 @@ if __name__ == '__main__':
     FLAGS(sys.argv)
     print("Flags: " + json.dumps(FLAGS.flag_values_dict(), sort_keys=True, indent=4))
 
-    if style == "simple":
+    if FLAGS.style == "simple":
         lines = latex_trees(FLAGS.input.split(','), FLAGS.width, FLAGS.height, FLAGS.precision)
-    else:
-        lines = latex_trees_sr(FLAGS.input.split(','), FLAGS.width, FLAGS.height, FLAGS.precision)
+    elif FLAGS.style == "shift-reduce":
+        lines = latex_trees_sr(list(map(int, FLAGS.input)), FLAGS.width, FLAGS.height, FLAGS.precision)
 
+    print(lines)
     for line in lines:
         print("\draw [line width=0.25mm] {} -- {};".format(line[0], line[1]))

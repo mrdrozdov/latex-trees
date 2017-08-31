@@ -9,8 +9,12 @@ def almost_eq(a, b, eps=1e-4):
 
 def check(expected, actual):
 
+    assert len(expected) == len(actual)
+
     # for line in lines:
     for i, (exp, act) in enumerate(zip(expected, actual)):
+
+        assert len(exp) == len(act)
 
         # for i in [start, end]:
         for exp_i, act_i in zip(exp, act):
@@ -101,9 +105,9 @@ class TestLatexTreesSR(unittest.TestCase):
         height = -1.0
         expected = [
             ((0.,0.), (-3,-1)),
-            ((0.75,-0.25), (-1.5,-1)),
-            ((1.5,-0.5), (0,-1)),
             ((2.25,-0.75), (1.5,-1)),
+            ((1.5,-0.5), (0,-1)),
+            ((0.75,-0.25), (-1.5,-1)),
             ((0.,0.), (3,-1)),
             ]
         actual = latex_trees_sr(tokens, width, height)
