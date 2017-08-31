@@ -120,8 +120,8 @@ class TestLatexTreesSR(unittest.TestCase):
         expected = [
             ((0.,0.), (-3,-1)),
             ((-2.25,-0.75), (-1.5,-1)),
-            ((1.5,-0.5), (0,-1)),
             ((2.25,-0.75), (1.5,-1)),
+            ((1.5,-0.5), (0,-1)),
             ((0.,0.), (3,-1)),
             ]
         actual = latex_trees_sr(tokens, width, height)
