@@ -83,11 +83,6 @@ def latex_trees_sr(transitions, width, height, precision=2):
     yleft = yoffset
     yright = 0
 
-    stack = []
-    buf = [1] * N_tokens
-
-    lines = []
-
     line = ((0,0), (xoffset,yoffset))
     lines.append(line)
 
@@ -97,6 +92,14 @@ def latex_trees_sr(transitions, width, height, precision=2):
 
     reduce_lst = []
 
+    class Node():
+        def __init__(self, depth):
+            self.depth = depth
+
+    stack = []
+    buf = [Node(1) for _ in range(N_tokens)]
+    lines = []
+
     for i, t in enumerate(transitions):
         if t == SHIFT:
             stack.append(buf.pop())
@@ -104,17 +107,20 @@ def latex_trees_sr(transitions, width, height, precision=2):
             new_stack_item = (stack.pop(), stack.pop())
             stack.append(new_stack_item)
 
+    def _is_leaf(item):
+        return isinstance(item, int)
+
     def _draw_left(root, draw_left):
         # If left is leaf, return False.
         # If draw_left is True, then draw line from
         # root to leaf.
-        pass
+        lines.append(None)
 
     def _draw_right(root, draw_right):
         # If right is leaf, return False.
         # If draw_left is True, then draw line from
         # root to leaf.
-        pass
+        lines.append(None)
 
     def draw(root, draw_left, draw_right):
 
