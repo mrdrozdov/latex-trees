@@ -84,7 +84,7 @@ def latex_trees_sr(transitions, width, height, precision=2):
     yright = 0
 
     stack = []
-    buffer = [()] * N_tokens
+    buf = [1] * N_tokens
 
     lines = []
 
@@ -98,58 +98,40 @@ def latex_trees_sr(transitions, width, height, precision=2):
     reduce_lst = []
 
     for i, t in enumerate(transitions):
-        start, end = None, None
         if t == SHIFT:
-            stack.append(())
+            stack.append(buf.pop())
         if t == REDUCE:
-            stack.pop()
+            new_stack_item = (stack.pop(), stack.pop())
+            stack.append(new_stack_item)
 
-            if i == N_transitions - 1:
-                continue
+    def _draw_left(root, draw_left):
+        # If left is leaf, return False.
+        # If draw_left is True, then draw line from
+        # root to leaf.
+        pass
 
-            if len(stack) == 1:  # LEFT
-                while len(reduce_lst) > 0:
-                    line = reduce_lst.pop()
-                    lines.append(line)
+    def _draw_right(root, draw_right):
+        # If right is leaf, return False.
+        # If draw_left is True, then draw line from
+        # root to leaf.
+        pass
 
-                start = (xleft, yleft - yincrement)
-                end   = (xoffset, height)
+    def draw(root, draw_left, draw_right):
 
-                xoffset += 2*xincrement
-                yleft -= yincrement
-                yright += yincrement
+        continue_left = _draw_left(root, draw_left)
+        continue_right = _draw_right(root, draw_right)
 
-                xleft += xincrement
-                xright += xincrement
+        if continue_left:
+            # The line from the root to furthest left leaf
+            # has already been drawn!
+            draw(root[0], False, True)
 
-                start = tuple(map(lambda x: round(x, precision), start))
-                end   = tuple(map(lambda x: round(x, precision), end))
+        if continue_right:
+            # The line from the root to furthest right leaf
+            # has already been drawn!
+            draw(root[1], True, False)
 
-                line = (start, end)
-                lines.append(line)
-            else:  # RIGHT
-                start = (xright, yright + yincrement)
-                end   = (xoffset, height)
-
-                xoffset += 2*xincrement
-                yleft -= yincrement
-                yright += yincrement
-
-                xleft += xincrement
-                xright += xincrement
-
-                start = tuple(map(lambda x: round(x, precision), start))
-                end   = tuple(map(lambda x: round(x, precision), end))
-
-                line = (start, end)
-                reduce_lst.append(line)
-
-    while len(reduce_lst) > 0:
-        line = reduce_lst.pop()
-        lines.append(line)
-
-    line = ((0,0), (width/2,yoffset))
-    lines.append(line)
+    draw(stack, True, True)
 
     return lines
 
