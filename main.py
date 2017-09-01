@@ -93,8 +93,13 @@ def latex_trees_sr(transitions, width, height, precision=2):
     reduce_lst = []
 
     class Node():
-        def __init__(self, depth):
+        def __init__(self, depth, left=None, right=None):
             self.depth = depth
+            self.left = left
+            self.right = right
+
+        def isleaf(self):
+            return (self.left is None and self.right is None)
 
     stack = []
     buf = [Node(1) for _ in range(N_tokens)]
@@ -104,23 +109,24 @@ def latex_trees_sr(transitions, width, height, precision=2):
         if t == SHIFT:
             stack.append(buf.pop())
         if t == REDUCE:
-            new_stack_item = (stack.pop(), stack.pop())
+            right = stack.pop()
+            left = stack.pop()
+            new_stack_item = Node(max(left.depth, right.depth) + 1, left, right)
             stack.append(new_stack_item)
-
-    def _is_leaf(item):
-        return isinstance(item, int)
 
     def _draw_left(root, draw_left):
         # If left is leaf, return False.
         # If draw_left is True, then draw line from
         # root to leaf.
         lines.append(None)
+        return root.left.isleaf()
 
     def _draw_right(root, draw_right):
         # If right is leaf, return False.
         # If draw_left is True, then draw line from
         # root to leaf.
         lines.append(None)
+        return root.right.isleaf()
 
     def draw(root, draw_left, draw_right):
 
