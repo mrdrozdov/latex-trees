@@ -97,6 +97,22 @@ class TestLatexTreesSR(unittest.TestCase):
         actual = latex_trees_sr(transitions, width, height)
         check(expected, actual)
 
+    def test_0000110001111(self):
+        transitions = list(map(int, '0000110001111'))
+        width = 6.0
+        height = -1.0
+        expected = [
+            ((0, 0), (-3.0, -1.0)),
+            ((0.5, -0.17), (-2.0, -1.0)),
+            ((-0.5, -0.83), (-1.0, -1.0)),
+            ((-1.0, -0.67), (0.0, -1.0)),
+            ((2.0, -0.67), (1.0, -1.0)),
+            ((2.5, -0.83), (2.0, -1.0)),
+            ((0, 0), (3.0, -1.0)),
+            ]
+        actual = latex_trees_sr(transitions, width, height, verbose=True)
+        check(expected, actual)
+
 
 if __name__ == '__main__':
     unittest.main()
