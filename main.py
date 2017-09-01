@@ -67,7 +67,15 @@ def latex_trees(tokens, width, height, precision=2):
     return lines
 
 
-def latex_trees_sr(transitions, width, height, precision=2):
+def latex_trees_sr(transitions, width, height, precision=2, verbose=False):
+    """
+    How to draw the (start,)?
+
+    - If we know the order (index of the token) and the direction (left or right),
+      then we can determine `line` that it falls on!
+    - We get a sense of ordering from drawn_left!
+    - That's not enough!
+    """
 
     N_transitions = len(transitions)
     N_tokens = int((N_transitions + 1) / 2)
@@ -76,23 +84,30 @@ def latex_trees_sr(transitions, width, height, precision=2):
     yincrement = height/(N_tokens-1)
 
     xoffset = -width/2
+    xoffset_right = width/2
     yoffset = height
+    # xleft = xoffset
+    # xright = 0
+    # yleft = yoffset
+    # yright = 0
 
-    xleft = xoffset
-    xright = 0
-    yleft = yoffset
-    yright = 0
+    # xoffset += 2*xincrement
+    # xleft += xincrement
+    # xright += xincrement
 
-    line = ((0,0), (xoffset,yoffset))
-    lines.append(line)
+    if verbose:
+        print("\n",
+              "xoffset", xoffset,"\n",
+              "yoffset", yoffset,"\n",
+              "xincrement", xincrement, "\n",
+              "yincrement", yincrement, "\n",
+              ""
+              )
 
-    xoffset += 2*xincrement
-    xleft += xincrement
-    xright += xincrement
-
-    reduce_lst = []
+    drawn_left = 0
 
     class Node():
+        _isroot = False
         def __init__(self, depth, left=None, right=None):
             self.depth = depth
             self.left = left
@@ -102,8 +117,11 @@ def latex_trees_sr(transitions, width, height, precision=2):
             return (self.left is None and self.right is None)
 
     stack = []
-    buf = [Node(1) for _ in range(N_tokens)]
+    buf = [Node(0) for _ in range(N_tokens)]
     lines = []
+
+    # line = ((0,0), (xoffset,yoffset))
+    # lines.append(line)
 
     for i, t in enumerate(transitions):
         if t == SHIFT:
@@ -114,36 +132,90 @@ def latex_trees_sr(transitions, width, height, precision=2):
             new_stack_item = Node(max(left.depth, right.depth) + 1, left, right)
             stack.append(new_stack_item)
 
+    def _increment_left():
+        nonlocal drawn_left
+        drawn_left = drawn_left + 1
+
+    def _increment_right():
+        nonlocal drawn_left
+        drawn_left = drawn_left + 1
+
     def _draw_left(root, draw_left):
-        # If left is leaf, return False.
         # If draw_left is True, then draw line from
         # root to leaf.
-        lines.append(None)
-        return root.left.isleaf()
+        if draw_left:
+            end = (xoffset + drawn_left * 2 * xincrement, yoffset)
+            if root._isroot:
+                start = (0, 0)
+            else:
+                start = (end[0] + xincrement * root.depth, yoffset - root.depth * yincrement)
+            start = tuple(map(lambda x: round(x, precision), start))
+            end   = tuple(map(lambda x: round(x, precision), end))
+            line = (start, end)
+            lines.append(line)
+
+            if verbose:
+
+                print("\n",
+                      "direction", "left",
+                      "depth", root.depth, "\n",
+                      "xoffset", xoffset,"\n",
+                      "yoffset", yoffset,"\n",
+                      "xincrement", xincrement, "\n",
+                      "yincrement", yincrement, "\n",
+                      "line", line, "\n"
+                      )
+
+            _increment_left()
 
     def _draw_right(root, draw_right):
-        # If right is leaf, return False.
         # If draw_left is True, then draw line from
         # root to leaf.
-        lines.append(None)
-        return root.right.isleaf()
+        if draw_right:
+            end = (xoffset + drawn_left * 2 * xincrement, yoffset)
+            if root._isroot:
+                start = (0, 0)
+            else:
+                start = (end[0] - xincrement * root.depth, yoffset - root.depth * yincrement)
+            start = tuple(map(lambda x: round(x, precision), start))
+            end   = tuple(map(lambda x: round(x, precision), end))
+            line = (start, end)
+            lines.append(line)
+
+            if verbose:
+                print("\n",
+                      "direction", "right",
+                      "depth", root.depth, "\n",
+                      "xoffset_right", xoffset_right,"\n",
+                      "yoffset", yoffset,"\n",
+                      "xincrement", xincrement, "\n",
+                      "yincrement", yincrement, "\n",
+                      "line", line, "\n"
+                      )
+
+            _increment_right()
 
     def draw(root, draw_left, draw_right):
 
-        continue_left = _draw_left(root, draw_left)
-        continue_right = _draw_right(root, draw_right)
+        _draw_left(root, draw_left)
 
-        if continue_left:
+        if not root.left.isleaf():
             # The line from the root to furthest left leaf
             # has already been drawn!
-            draw(root[0], False, True)
+            draw(root.left, False, True)
 
-        if continue_right:
+        if not root.right.isleaf():
             # The line from the root to furthest right leaf
             # has already been drawn!
-            draw(root[1], True, False)
+            draw(root.right, True, False)
 
-    draw(stack, True, True)
+        _draw_right(root, draw_right)
+
+    stack[0]._isroot = True
+    draw(stack[0], True, True)
+
+    # Sort by token order.
+    lines = sorted(lines, key=lambda x: x[1])
 
     return lines
 
