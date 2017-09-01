@@ -145,9 +145,10 @@ def latex_trees_sr(transitions, width, height, precision=2, verbose=False):
     return lines
 
 
-def print_tokens(lines, tokens):
+def print_tokens(lines, tokens, textheight='1.2cm', fontscale='0.5'):
     for line, token in zip(lines, tokens):
-        print("\\node[text height=1.2cm] at " + str(line[1]) + " [fontscale=4] {" + str(token) + "};")
+        print("\\node[text height=" + textheight + ",anchor=north] at " + str(line[1]) + \
+              " [fontscale=" + fontscale + "] {" + str(token) + "};")
 
 
 if __name__ == '__main__':
@@ -156,6 +157,8 @@ if __name__ == '__main__':
     gflags.DEFINE_string("tokens", None, "tokens")  # The,cat,jumps
     gflags.DEFINE_float("width", 6.0, "width")
     gflags.DEFINE_float("height", -1.0, "height")
+    gflags.DEFINE_string("textheight", "1.2cm", "textheight")
+    gflags.DEFINE_string("fontscale", "0.5", "fontscale")
     gflags.DEFINE_integer("precision", 2, "precision")
 
     FLAGS(sys.argv)
@@ -170,4 +173,4 @@ if __name__ == '__main__':
     if FLAGS.tokens:
         sys.stdout.write('\n')
         sys.stdout.write('% tokens\n')
-        print_tokens(lines, FLAGS.tokens.split(','))
+        print_tokens(lines, FLAGS.tokens.split(','), textheight=FLAGS.textheight, fontscale=FLAGS.fontscale)
