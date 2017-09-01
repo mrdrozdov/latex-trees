@@ -23,14 +23,12 @@ def latex_trees_sr(transitions, width, height, precision=2, verbose=False):
     xoffset_right = width/2
     yoffset = height
 
-    if verbose:
-        print("\n",
-              "xoffset", xoffset,"\n",
-              "yoffset", yoffset,"\n",
-              "xincrement", xincrement, "\n",
-              "yincrement", yincrement, "\n",
-              ""
-              )
+    print("\n" +
+          "% xoffset", xoffset,"\n" +
+          "% yoffset", yoffset,"\n" +
+          "% xincrement", xincrement, "\n" +
+          "% yincrement", yincrement, "\n"
+          )
 
     drawn_left = 0
 
