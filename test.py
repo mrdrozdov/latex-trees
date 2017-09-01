@@ -83,6 +83,20 @@ class TestLatexTreesSR(unittest.TestCase):
         actual = latex_trees_sr(tokens, width, height)
         check(expected, actual)
 
+    def test_000110101(self):
+        tokens = list(map(int, '000110101'))
+        width = 8.0
+        height = -1.2
+        expected = [
+            ((0,0), (-4,-1.2)),
+            ((-1,-0.9), (-2,-1.2)),
+            ((-2,-0.6), (0,-1.2)),
+            ((-1,-0.3), (2,-1.2)),
+            ((0,0), (4,-1.2)),
+            ]
+        actual = latex_trees_sr(tokens, width, height)
+        check(expected, actual)
+
 
 if __name__ == '__main__':
     unittest.main()
