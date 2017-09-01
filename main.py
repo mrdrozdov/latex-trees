@@ -145,9 +145,15 @@ def latex_trees_sr(transitions, width, height, precision=2, verbose=False):
     return lines
 
 
+def print_tokens(lines, tokens):
+    for line, token in zip(lines, tokens):
+        print("\\node[text height=1.2cm] at " + str(line[1]) + " [fontscale=4] {" + str(token) + "};")
+
+
 if __name__ == '__main__':
 
     gflags.DEFINE_string("input", "00101", "input")
+    gflags.DEFINE_string("tokens", None, "tokens")  # The,cat,jumps
     gflags.DEFINE_float("width", 6.0, "width")
     gflags.DEFINE_float("height", -1.0, "height")
     gflags.DEFINE_integer("precision", 2, "precision")
@@ -157,5 +163,11 @@ if __name__ == '__main__':
 
     lines = latex_trees_sr(list(map(int, FLAGS.input)), FLAGS.width, FLAGS.height, FLAGS.precision)
 
+    sys.stdout.write('% tree\n')
     for line in lines:
         print("\draw [line width=0.25mm] {} -- {};".format(line[0], line[1]))
+
+    if FLAGS.tokens:
+        sys.stdout.write('\n')
+        sys.stdout.write('% tokens\n')
+        print_tokens(lines, FLAGS.tokens.split(','))

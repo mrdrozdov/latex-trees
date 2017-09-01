@@ -26,7 +26,7 @@ def check(expected, actual):
 class TestLatexTreesSR(unittest.TestCase):
 
     def test_lb_5(self):
-        tokens = list(map(int, '001010101'))
+        transitions = list(map(int, '001010101'))
         width = 6.0
         height = -1.0
         expected = [
@@ -36,11 +36,11 @@ class TestLatexTreesSR(unittest.TestCase):
             ((-0.75,-0.25), (1.5,-1)),
             ((0.,0.), (3,-1)),
             ]
-        actual = latex_trees_sr(tokens, width, height)
+        actual = latex_trees_sr(transitions, width, height)
         check(expected, actual)
 
     def test_rb_5(self):
-        tokens = list(map(int, '000001111'))
+        transitions = list(map(int, '000001111'))
         width = 6.0
         height = -1.0
         expected = [
@@ -50,11 +50,11 @@ class TestLatexTreesSR(unittest.TestCase):
             ((2.25,-0.75), (1.5,-1)),
             ((0.,0.), (3,-1)),
             ]
-        actual = latex_trees_sr(tokens, width, height)
+        actual = latex_trees_sr(transitions, width, height)
         check(expected, actual)
 
     def test_001000111(self):
-        tokens = list(map(int, '001000111'))
+        transitions = list(map(int, '001000111'))
         width = 6.0
         height = -1.0
         expected = [
@@ -64,11 +64,11 @@ class TestLatexTreesSR(unittest.TestCase):
             ((2.25,-0.75), (1.5,-1)),
             ((0.,0.), (3,-1)),
             ]
-        actual = latex_trees_sr(tokens, width, height)
+        actual = latex_trees_sr(transitions, width, height)
         check(expected, actual)
 
     def test_0000101010111(self):
-        tokens = list(map(int, '0000101010111'))
+        transitions = list(map(int, '0000101010111'))
         width = 6.0
         height = -1.2
         expected = [
@@ -80,11 +80,11 @@ class TestLatexTreesSR(unittest.TestCase):
             ((0.5,-0.6), (2,-1.2)),
             ((0,0), (3,-1.2)),
             ]
-        actual = latex_trees_sr(tokens, width, height)
+        actual = latex_trees_sr(transitions, width, height)
         check(expected, actual)
 
     def test_000110101(self):
-        tokens = list(map(int, '000110101'))
+        transitions = list(map(int, '000110101'))
         width = 8.0
         height = -1.2
         expected = [
@@ -94,7 +94,7 @@ class TestLatexTreesSR(unittest.TestCase):
             ((-1,-0.3), (2,-1.2)),
             ((0,0), (4,-1.2)),
             ]
-        actual = latex_trees_sr(tokens, width, height)
+        actual = latex_trees_sr(transitions, width, height)
         check(expected, actual)
 
 
