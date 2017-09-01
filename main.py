@@ -12,14 +12,6 @@ REDUCE = 1
 
 
 def latex_trees_sr(transitions, width, height, precision=2, verbose=False):
-    """
-    How to draw the (start,)?
-
-    - If we know the order (index of the token) and the direction (left or right),
-      then we can determine `line` that it falls on!
-    - We get a sense of ordering from drawn_left!
-    - That's not enough!
-    """
 
     N_transitions = len(transitions)
     N_tokens = int((N_transitions + 1) / 2)
@@ -30,14 +22,6 @@ def latex_trees_sr(transitions, width, height, precision=2, verbose=False):
     xoffset = -width/2
     xoffset_right = width/2
     yoffset = height
-    # xleft = xoffset
-    # xright = 0
-    # yleft = yoffset
-    # yright = 0
-
-    # xoffset += 2*xincrement
-    # xleft += xincrement
-    # xright += xincrement
 
     if verbose:
         print("\n",
@@ -63,9 +47,6 @@ def latex_trees_sr(transitions, width, height, precision=2, verbose=False):
     stack = []
     buf = [Node(0) for _ in range(N_tokens)]
     lines = []
-
-    # line = ((0,0), (xoffset,yoffset))
-    # lines.append(line)
 
     for i, t in enumerate(transitions):
         if t == SHIFT:
